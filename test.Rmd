@@ -11,4 +11,4 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ## Cool title
 
-Hello everyone, this is a test of the connection with the GitHub.
+Hello everyone, this is a test of the connection with the GitHub. Test
