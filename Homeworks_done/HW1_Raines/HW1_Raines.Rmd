@@ -1,0 +1,22 @@
+---
+title: "HW1_Raines"
+Author: "Evgenii Raines
+output: pdf_notebook
+---
+
+## Task
+
+find the area of a figure bounded by curves given by the equation:
+
+$$
+ y = 2|x| - \pi, x \in [-{pi\over2},{pi\over2}]
+$$
+$$
+ y = |sin(2x)|, x \in [-{pi\over 2},{pi\over 2}]
+$$
+
+using the Monte Carlo method.
+
+## Solution
+
+### Libraries installation
