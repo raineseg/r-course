@@ -1,12 +1,14 @@
 ---
 title: "HW1_Raines"
 Author: "Evgenii Raines
-output: pdf_notebook
+output:
+  pdf_document: default
+  html_notebook: default
 ---
 
 ## Task
 
-find the area of a figure bounded by curves given by the equation:
+Find the area of a figure bounded by curves given by the equation:
 
 $$
  y = 2|x| - \pi, x \in [-{pi\over2},{pi\over2}]
@@ -19,4 +21,60 @@ using the Monte Carlo method.
 
 ## Solution
 
-### Libraries installation
+### The Monte Carlo Method
+
+The essence of the method is that random points are applied to a figure of a known area. An unknown figure fits into a known one. Then the area of the unknown figure is equal to the number of points inside it divided by the total number of points and multiplicatied by the Area of known figure. 
+
+### Generation of known figure
+
+Let's generate the figure with the known area of pi^2 (so as to minimize the number of points out of the target figure). The number of points per each axis is 1.000.000.
+
+```{r}
+Size <- 1000000
+X <- runif(1000000, min = -pi/2, max = pi/2)
+Y <- runif(1000000, min = -pi, max = 1)
+cat("Total number of points:", Size)
+AllPoint <- data.frame(X, Y) #save plots as a 2d frame
+```
+
+### Generation of unknown figure
+
+The next step is to filter only points which are inside the unknown figure.
+
+```{r}
+TargetFigure <- Y >= 2*X-pi & Y >= -2*X-pi & Y <= sqrt(sin(2*X)^2)
+cat("Number of points inside the target figure:", sum(TargetFigure))
+```
+
+### point plot
+
+Let's look at the point distribution to make sure that our filter parameters are correct.
+
+```{r}
+library(ggplot2)
+library(tidyverse)
+AllPoint %>%
+  ggplot(aes(x = X, y = Y, color = TargetFigure)) +
+  geom_point(size = 0.1) +
+  scale_colour_discrete("Is point inside the target figure?") +
+  theme_minimal()
+
+```
+As it can be seen, the figure is close to the provided formula.
+
+### Area calculation
+
+And finally, the calculation of the area of the provided figure.
+
+```{r}
+Point_Proportion <- sum(TargetFigure) / Size
+TotalArea <- (1 + pi)*(pi/2 + pi/2)
+TargetArea = TotalArea * Point_Proportion
+cat("The area of the analised figure:", TargetArea)
+```
+
+### Answer
+
+```{r}
+cat("The area of a figure bounded by curves:", TargetArea)
+```
