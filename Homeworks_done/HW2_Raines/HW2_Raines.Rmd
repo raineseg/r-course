@@ -1,0 +1,11 @@
+---
+title: "HW2_Raines"
+Author: Evgenii Raines
+output:
+  html_document:
+    df_print: paged
+  html_notebook: default
+  pdf_document: default
+---
+
+Test
