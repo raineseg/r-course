@@ -6,6 +6,182 @@ output:
     df_print: paged
   html_notebook: default
   pdf_document: default
+editor_options: 
+  chunk_output_type: inline
 ---
 
-Test
+## Task
+
+The aim of the task is to simulate the [Black Jack game](https://www.officialgamerules.org/blackjack).
+
+To do this, I need to:
+
+* create suitable objects for casino deck, dealer hand, and my hand.
+
+* implement shuffle_deck() function
+
+* implement start_game() function that shuffles deck, deals 2 cards for me and dealer. and prints state
+
+* implement deal() function that deals me a card and prints state
+
+* implement stop_game() function that prints result: win or loose
+
+
+## Solution
+
+### Casino desk, dealer hand and my hand.
+
+First of all, let's import the standard international 52-card deck.
+
+```{r}
+deck <- read.table('deck.csv', header = TRUE, sep = "\t")
+cat("The deck and value table:")
+deck
+```
+
+Then I need to assume the casino which includes 4 full decks. 
+
+```{r}
+deck <- rbind(deck, deck[rep(1:52, 3), ])
+rownames(deck) <- 1:208 #fix the rownames
+cat("The number of cards in casino:", nrow(deck))
+```
+
+
+
+The next step is to create the dealer hand and the player hand. Let's make 2 empty data frames. 
+
+```{r}
+dealer_hand <- data.frame(matrix(vector(), 0, 3,
+                dimnames=list(c(), c("face", "suit", "value"))))
+
+player_hand <- data.frame(matrix(vector(), 0, 3,
+                dimnames=list(c(), c("face", "suit", "value"))))
+```
+
+Moreover, let's create the deck for the dealer. This object is essential as to create the stat function.
+
+```{r}
+new_deck <- deck
+```
+### Shuffle function
+
+The next step is creating the shuffle function. It does not really difference with the one from the lesson, but the number of cards should be changed.
+
+```{r}
+shuffle <- function(deck) {
+  random <- sample(1:nrow(deck), size = nrow(deck))
+  deck <<- deck[random, ]
+}
+```
+
+
+
+
+### The start game function
+
+Also it is worth making the function for the game stats and a way to count the probability of victory.
+
+```{r}
+stats <- function(dealer_hand, player_hand, new_deck) {
+  
+  #the stats part
+  
+  cat("Dealer's hand:", fill = TRUE)
+  print(dealer_hand, row.names = FALSE, right = FALSE)
+  cat("Sum", sum(dealer_hand$value), fill = TRUE)
+  cat(" ", fill = TRUE)
+  cat("Your hand:", fill = TRUE)
+  print(player_hand, row.names = FALSE, right = FALSE)
+  cat("Sum", sum(player_hand$value), fill = TRUE)
+  cat(" ", fill = TRUE)
+  
+  #the probability part
+  
+  if(sum(player_hand$value) %in% c(sum(dealer_hand$value):21)) {
+    cat("chances 100 %")
+  } else if (sum(player_hand$value) > 21) {
+    cat("chances 0 %")
+  } else {
+    low_limit <<- sum(dealer_hand$value) - sum(player_hand$value)
+    high_limit <<- 21 - sum(player_hand$value) 
+    limits <<- c(low_limit:high_limit)
+    count <<- sum(new_deck$value %in% limits)
+    if((high_limit - low_limit) > 10) {
+      cat("The difference between you sum and dealers sum is more than 10, which is more than the largest card value.")
+    } else {
+      cat("chances", (count/nrow(new_deck))*100, "%", fill = TRUE)
+    }
+  }
+  cat("\n\n")
+}
+```
+
+
+As the **shuffle function** is already created, let's create the **start game function** and add the **shuffle function** to it.
+
+```{r}
+start_game <- function(deck) {
+  new_deck <<- shuffle(deck) #create new deck for every game game
+  player_hand <<- new_deck[1:2,] #give cards to players
+  new_deck <<- new_deck[-c(1, 2), ] #take the cards out of the deck
+  dealer_hand <<- new_deck[1:2,] #give cards to dealer
+  new_deck <<- new_deck[-c(1, 2), ] #take the cards out of the deck
+  stats(dealer_hand, player_hand, new_deck)
+}
+
+```
+
+
+### Deal function
+
+According to the rules, the player can take an additional card mane times as possible. To make it, it is necessary to run the **deal** function. I am not sure does it is essential to shuffle cards before the deal, so add this function but as a comment.
+
+```{r}
+deal <- function() {
+  #shuffle(new_deck) # Shuffle all left card
+  new_card <- new_deck[1,]
+  player_hand[nrow(player_hand) + 1,] <<- new_card
+  new_deck <<- new_deck[-c(1), ]
+  stats(dealer_hand, player_hand, new_deck)
+}
+
+```
+
+### Stop game function
+
+And finally, the stop function which stops the game.
+
+```{r}
+stop_game <- function() {
+  
+  stats(dealer_hand, player_hand, new_deck)
+  
+  if(sum(player_hand$value) %in% c(sum(dealer_hand$value): 21)){
+    
+    cat("You won")
+    
+  } else {
+    cat("You lose")
+  }
+}
+```
+
+## Test 1
+
+So, let's run the first test game.
+
+```{r}
+start_game(deck)
+deal()
+stop_game()
+```
+
+## Test 2
+
+And the second test
+
+```{r}
+start_game(deck)
+stop_game()
+```
