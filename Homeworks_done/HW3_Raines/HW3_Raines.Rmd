@@ -7,10 +7,77 @@ output:
   html_document:
     df_print: paged
 editor_options: 
-  chunk_output_type: inline
+  chunk_output_type: console
 ---
 
 ## Task
 
 
 Create png file with synteny between ZANU and DONGOLA X, 2, and 3 chromosomes using the RIdeogram package.
+
+## Solution
+
+### Data import
+
+First of all, let's import the dataset for both species and mapping info.
+
+```{r warning=FALSE, include=FALSE}
+# importing data.table package, which would be useful in the future
+library("data.table")
+
+# dongola data
+dongola <- read.table(file = '~/Университет ИТМО/Учёба/Магистратура/Statistics 2/GitHub_Homeworks/Homeworks/Homeworks_done/HW3_Raines/DONGOLA_genes.tsv', sep = '\t', header = TRUE)
+
+# zanu data
+zanu <- read.table(file = '~/Университет ИТМО/Учёба/Магистратура/Statistics 2/GitHub_Homeworks/Homeworks/Homeworks_done/HW3_Raines/ZANU_genes.tsv', sep = '\t', header = TRUE)
+
+# data for results of gene mapping between two species
+map <- read.table(file = '~/Университет ИТМО/Учёба/Магистратура/Statistics 2/GitHub_Homeworks/Homeworks/Homeworks_done/HW3_Raines/gene_mapping.tsv', sep = '\t', header = TRUE)
+```
+
+
+## Creating templates for RIdeogram import
+
+RIdeogram synteny plot requires 2 files: data about the sizes of chromosomes and synteny info. Let's start with the first one.
+
+1. The length for the ZANU's chromosomes we know from the task file
+
+X: 27238055
+2: 114783175
+3: 97973315
+
+2. The length for the DONGOLAS's chromosomes can be found in the [original publication](https://academic.oup.com/gigascience/article/10/3/giab017/6170950?login=true)
+
+X: 26913133 
+2: 111988354
+3: 95710210
+
+And know we can make the karyotype file.
+
+```{r}
+# create table for karyotype
+
+karyotype_dual_comparison = data.table(
+  Chr = c("X","2","3","X","2","3"),
+  Start = 1,
+  End = c("27238055", "114783175", "97973315", "26913133", "111988354", "95710210"),
+  fill = 969696,
+  species = c("ZANU", "ZANU", "ZANU", "DONGOLA", "DONGOLA", "DONGOLA"),
+  size = 12,
+  color = 252525
+)
+```
+
+
+```{r}
+# the table
+
+karyotype_dual_comparison
+```
+
+And then, create a template for the future synteny table.
+
+```{r}
+
+```
+
