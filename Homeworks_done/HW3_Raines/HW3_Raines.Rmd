@@ -1,0 +1,16 @@
+---
+title: "HW3_Raines"
+Author: Evgenii Raines
+output:
+  pdf_document: default
+  html_notebook: default
+  html_document:
+    df_print: paged
+editor_options: 
+  chunk_output_type: inline
+---
+
+## Task
+
+
+Create png file with synteny between ZANU and DONGOLA X, 2, and 3 chromosomes using the RIdeogram package.
